@@ -9,7 +9,7 @@ import base64
 with open("../certs/public_key.pem","rb") as f:
     public_key = load_pem_public_key(f.read(), backend=default_backend())
 
-with open("../certs/decrypted.txt", "rb") as f:
+with open("../certs/plaintext.txt", "rb") as f:
     message = f.read()
 
 ciphertext = public_key.encrypt(
@@ -21,5 +21,11 @@ ciphertext = public_key.encrypt(
     )
 )
 
+b64_cipertext = base64.encodebytes(ciphertext)
+
 with open("../certs/ciphertext.txt", "wb") as f:
-    f.write(base64.encodebytes(ciphertext))
+    f.write(b64_cipertext)
+
+
+print("Original: {0}".format(message.decode()))
+print("Ciphertext: {0}".format(b64_cipertext.decode()))
