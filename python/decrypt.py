@@ -16,8 +16,8 @@ ciphertext = base64.decodebytes(b64_ciphertext)
 plaintext = private_key.decrypt(
     ciphertext,
     padding.OAEP(
-        mgf=padding.MGF1(algorithm=hashes.SHA1()),
-        algorithm=hashes.SHA1(),
+        mgf=padding.MGF1(algorithm=hashes.SHA256()),
+        algorithm=hashes.SHA256(),
         label=None
     )
 )

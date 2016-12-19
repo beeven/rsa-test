@@ -11,12 +11,12 @@ key = rsa.generate_private_key(
 with open("../certs/private_key.pem", "wb") as f:
     f.write(key.private_bytes(
         encoding=serialization.Encoding.PEM,
-        format=serialization.PrivateFormat.TraditionalOpenSSL,
+        format=serialization.PrivateFormat.PKCS8,
         encryption_algorithm=serialization.NoEncryption()
     ))
 
 with open('../certs/public_key.pem', "wb") as f:
     f.write(key.public_key().public_bytes(
         encoding=serialization.Encoding.PEM,
-        format=serialization.PublicFormat.PKCS1
+        format=serialization.PublicFormat.SubjectPublicKeyInfo
     ))
