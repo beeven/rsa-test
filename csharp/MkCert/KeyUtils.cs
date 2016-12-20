@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.OpenSsl;
+using Org.BouncyCastle.Math;
 using System.IO;
 
 namespace MkCert
@@ -14,7 +15,7 @@ namespace MkCert
         public static AsymmetricCipherKeyPair GenerateKeyPair()
         {
             var keyPairGenerator = new Org.BouncyCastle.Crypto.Generators.RsaKeyPairGenerator();
-            keyPairGenerator.Init(new KeyGenerationParameters(new Org.BouncyCastle.Security.SecureRandom(), 2048));
+            keyPairGenerator.Init(new RsaKeyGenerationParameters(new BigInteger("65537"),new Org.BouncyCastle.Security.SecureRandom(), 2048, 80));
             return keyPairGenerator.GenerateKeyPair();
         }
 

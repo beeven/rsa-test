@@ -23,8 +23,7 @@ namespace MkCert
                 
                 System.IO.BinaryWriter bw = new System.IO.BinaryWriter(ms);
                 
-                int i = 0;
-                for (i = 0; i < content.Length; i += inputBlockSize)
+                for (int i = 0; i < content.Length; i += inputBlockSize)
                 {
                     var ciphertext = oaepEncoding.ProcessBlock(content, i, i + inputBlockSize < content.Length ? inputBlockSize : content.Length-i );
                     bw.Write(ciphertext);

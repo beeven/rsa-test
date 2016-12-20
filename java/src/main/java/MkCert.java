@@ -5,29 +5,42 @@
  * @author beeven, @date 12/20/16 12:53 AM
  */
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
+import org.bouncycastle.crypto.InvalidCipherTextException;
+import org.bouncycastle.crypto.params.RSAKeyParameters;
+import org.bouncycastle.crypto.params.RSAPrivateCrtKeyParameters;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.security.Key;
- 
-import org.bouncycastle.util.io.pem.PemObject;
-import org.bouncycastle.util.io.pem.PemReader;
-import org.bouncycastle.util.io.pem.PemWriter;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.file.*;
+
 
 public class MkCert {
     public boolean someLibraryMethod() {
         return true;
     }
 
-    public void generateKeyPair() {
-        
-    }
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException, InvalidCipherTextException {
+        AsymmetricCipherKeyPair keyPair = KeyUtils.generateKeyPair();
+        String privateKeyPem = KeyUtils.RSAPrivateKeyToPem((RSAPrivateCrtKeyParameters)keyPair.getPrivate());
+        String publicKeyPem = KeyUtils.RSAPublicKeyToPem((RSAKeyParameters)keyPair.getPublic());
+        Files.write(Paths.get("d:\\dev\\rsa-test\\certs\\private_key.pem"), privateKeyPem.getBytes(), StandardOpenOption.CREATE);
+        Files.write(Paths.get("d:\\dev\\rsa-test\\certs\\public_key.pem"), publicKeyPem.getBytes(), StandardOpenOption.CREATE);
 
-        System.out.println("Hello world!");
+        RSAPrivateCrtKeyParameters privateKeyParam = KeyUtils.RSAPrivateKeyFromPem(new String(Files.readAllBytes(Paths.get("d:\\dev\\rsa-test\\certs\\private_key.pem"))));
+        RSAKeyParameters publicKeyParam = KeyUtils.RSAPublicKeyFromPem(new String(Files.readAllBytes(Paths.get("d:\\dev\\rsa-test\\certs\\public_key.pem"))));
+
+        byte[] plainText = Files.readAllBytes(Paths.get("d:\\dev\\rsa-test\\certs\\plaintext.txt"));
+        String cipherText = Encrypt.EncryptBytesAndEncodeWithBase64(publicKeyParam, plainText);
+        System.out.println(String.format("Plain: %s",new String(plainText, "UTF-8")));
+        System.out.println(String.format("Cipher text: %s", cipherText));
+        Files.write(Paths.get("d:\\dev\\rsa-test\\certs\\ciphertext.txt"), cipherText.getBytes(), StandardOpenOption.CREATE);
+
+        byte[] decryptedText = Decrypt.DecryptBytes(privateKeyParam, cipherText);
+        System.out.println(String.format("Decrypted text: %s", new String(decryptedText)));
+
     }
 }
