@@ -52,7 +52,6 @@ public class KeyUtils {
     public static  RSAPrivateCrtKeyParameters RSAPrivateKeyFromPem(String privateKeyPem) throws IOException {
         StringReader sr = new StringReader(privateKeyPem);
         PemReader pemReader = new PemReader(sr);
-        //PrivateKeyInfo privateKeyInfo = PrivateKeyInfo.getInstance(pemReader.readPemObject());
         return (RSAPrivateCrtKeyParameters) PrivateKeyFactory.createKey(pemReader.readPemObject().getContent());
     }
 

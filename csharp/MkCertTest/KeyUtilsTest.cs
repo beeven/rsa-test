@@ -1,4 +1,27 @@
------BEGIN PRIVATE KEY-----
+using System;
+using Xunit;
+using MkCert;
+using Org.BouncyCastle.Crypto.Parameters;
+
+namespace MkCertTest
+{
+    public class KeyUtilsTest
+    {
+        [Fact]
+        public void RsaKeyToPemShouldGeneratePEMString()
+        {
+            var keyPair = KeyUtils.GenerateKeyPair();
+            var actual = KeyUtils.RsaKeyToPem((RsaKeyParameters)keyPair.Public);
+            Assert.StartsWith("-----BEGIN PUBLIC KEY-----", actual);
+
+            var actual2 = KeyUtils.RsaKeyToPem((RsaPrivateCrtKeyParameters)keyPair.Private);
+            Assert.StartsWith("-----BEGIN PRIVATE KEY-----", actual);
+        }
+
+        [Fact]
+        public void RsaKeyFromPemShouldReturnKey()
+        {
+            string privateKeyPem = @"-----BEGIN PRIVATE KEY-----
 MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCmaqFATMsyIGKS
 ftzmyW+232U2S0OvPCve0Kfk3biWxkqB0mpkx33XLig55b+rLkIbaH2+aCZPGuZT
 NbZ9LYqAv3BDRuOpd8NyGLBl8naalCFpJoB0xUBzhoqe+EBcTTR3c0SclN2AknPo
@@ -25,4 +48,10 @@ mlHNcw2dgLiQot5H/PRN8cItYPOxC39DGRzbP/SfAoGAeftq+seHV+d+mpn1Nglk
 9sG9CdAvIhDrlTnzKpdItNGUHyPo5cnsvgTjs042+V1lgQrdyyKw+5RMWEymio26
 SO88oCdU2PZdRp+8NrzGAeeDPXsanMrmAPAiGwXhR8/4w9cQmCubbBNFoijgbYB7
 PomtxFeMm0if9zj/tzXDIHw=
------END PRIVATE KEY-----
+-----END PRIVATE KEY-----";
+            var actual = KeyUtils.RsaKeyFromPem(privateKeyPem);
+
+            Assert.True(actual.IsPrivate);
+        }
+    }
+}

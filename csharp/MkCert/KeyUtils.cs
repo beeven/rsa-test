@@ -19,42 +19,29 @@ namespace MkCert
             return keyPairGenerator.GenerateKeyPair();
         }
 
-        public static string RsaPrivateKeyToPem(RsaPrivateCrtKeyParameters privateKey)
+
+        public static string RsaKeyToPem(RsaKeyParameters keyParams)
         {
             using (MemoryStream ms = new MemoryStream())
             {
                 PemWriter writer = new PemWriter(new StreamWriter(ms));
-                Pkcs8Generator generator = new Pkcs8Generator(privateKey);
-                writer.WriteObject(generator.Generate());
+                if(keyParams.IsPrivate)
+                {
+                    Pkcs8Generator generator = new Pkcs8Generator(keyParams);
+                    writer.WriteObject(generator.Generate());
+                }
+                else
+                {
+                    writer.WriteObject(keyParams);
+                }
                 writer.Writer.Flush();
                 return System.Text.Encoding.ASCII.GetString(ms.ToArray());
             }
         }
 
-        public static string RsaPublicKeyToPem(RsaKeyParameters publicKey)
+        public static RsaKeyParameters RsaKeyFromPem(string keyPem)
         {
-            using (MemoryStream ms = new MemoryStream())
-            {
-                PemWriter writer = new PemWriter(new StreamWriter(ms));
-                writer.WriteObject(publicKey);
-                writer.Writer.Flush();
-                return System.Text.Encoding.ASCII.GetString(ms.ToArray());
-            }
-
-        }
-
-        public static RsaPrivateCrtKeyParameters RsaPrivateKeyFromPem(string privateKeyPem)
-        {
-            using (MemoryStream ms = new MemoryStream(System.Text.Encoding.ASCII.GetBytes(privateKeyPem)))
-            {
-                var pemReader = new PemReader(new StreamReader(ms));
-                return pemReader.ReadObject() as RsaPrivateCrtKeyParameters;
-            }
-        }
-
-        public static RsaKeyParameters RsaPublicKeyFromPem(string publicKeyPem)
-        {
-            using (MemoryStream ms = new MemoryStream(System.Text.Encoding.ASCII.GetBytes(publicKeyPem)))
+            using (MemoryStream ms = new MemoryStream(System.Text.Encoding.ASCII.GetBytes(keyPem)))
             {
                 var pemReader = new PemReader(new StreamReader(ms));
                 return pemReader.ReadObject() as RsaKeyParameters;

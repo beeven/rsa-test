@@ -13,13 +13,13 @@ namespace MkCert
         public static void Main(string[] args)
         {
             var keyPair = KeyUtils.GenerateKeyPair();
-            var publicKeyPem = KeyUtils.RsaPublicKeyToPem((RsaKeyParameters)keyPair.Public);
-            var privateKeyPem = KeyUtils.RsaPrivateKeyToPem((RsaPrivateCrtKeyParameters)keyPair.Private);
+            var publicKeyPem = KeyUtils.RsaKeyToPem((RsaKeyParameters)keyPair.Public);
+            var privateKeyPem = KeyUtils.RsaKeyToPem((RsaPrivateCrtKeyParameters)keyPair.Private);
             File.WriteAllText(@"d:\dev\rsa-test\certs\private_key.pem", privateKeyPem);
             File.WriteAllText(@"d:\dev\rsa-test\certs\public_key.pem", publicKeyPem);
 
-            var publicKey = KeyUtils.RsaPublicKeyFromPem(File.ReadAllText(@"d:\dev\rsa-test\certs\public_key.pem"));
-            var privateKey = KeyUtils.RsaPrivateKeyFromPem(File.ReadAllText(@"d:\dev\rsa-test\certs\private_key.pem"));
+            var publicKey = KeyUtils.RsaKeyFromPem(File.ReadAllText(@"d:\dev\rsa-test\certs\public_key.pem"));
+            var privateKey = KeyUtils.RsaKeyFromPem(File.ReadAllText(@"d:\dev\rsa-test\certs\private_key.pem")) as RsaPrivateCrtKeyParameters;
 
             var plainText = File.ReadAllBytes(@"d:\dev\rsa-test\certs\plaintext.txt");
             var cipherText = Encrypt.EncryptBytesAndEncodeWithBase64(publicKey, plainText);

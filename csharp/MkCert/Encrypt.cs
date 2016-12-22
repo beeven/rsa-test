@@ -6,6 +6,7 @@ using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Digests;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Encodings;
+using System.Security.Cryptography;
 
 namespace MkCert
 {
@@ -37,6 +38,20 @@ namespace MkCert
         {
             var cipherBytes = EncryptBytes(publicKey, content);
             return Org.BouncyCastle.Utilities.Encoders.Base64.ToBase64String(cipherBytes);
+        }
+
+        public static byte[] EncryptWithRSACng(RsaKeyParameters publicKey, byte[] content)
+        {
+            using (RSA rsa = RSA.Create())
+            {
+                rsa.ImportParameters(new RSAParameters()
+                {
+                    Exponent = publicKey.Exponent.ToByteArray(),
+                    Modulus = publicKey.Modulus.ToByteArray()
+                });
+                return rsa.Encrypt(content, RSAEncryptionPadding.OaepSHA256);
+            }
+               
         }
         
     }
