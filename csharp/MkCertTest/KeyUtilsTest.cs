@@ -15,7 +15,7 @@ namespace MkCertTest
             Assert.StartsWith("-----BEGIN PUBLIC KEY-----", actual);
 
             var actual2 = KeyUtils.RsaKeyToPem((RsaPrivateCrtKeyParameters)keyPair.Private);
-            Assert.StartsWith("-----BEGIN PRIVATE KEY-----", actual);
+            Assert.StartsWith("-----BEGIN PRIVATE KEY-----", actual2);
         }
 
         [Fact]
@@ -52,6 +52,8 @@ PomtxFeMm0if9zj/tzXDIHw=
             var actual = KeyUtils.RsaKeyFromPem(privateKeyPem);
 
             Assert.True(actual.IsPrivate);
+
         }
+
     }
 }

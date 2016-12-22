@@ -27,7 +27,7 @@ namespace MkCert
                 PemWriter writer = new PemWriter(new StreamWriter(ms));
                 if(keyParams.IsPrivate)
                 {
-                    Pkcs8Generator generator = new Pkcs8Generator(keyParams);
+                    Pkcs8Generator generator = new Pkcs8Generator((RsaPrivateCrtKeyParameters)keyParams);
                     writer.WriteObject(generator.Generate());
                 }
                 else
